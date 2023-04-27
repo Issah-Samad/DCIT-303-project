@@ -1,0 +1,2486 @@
+<?php
+	if(ISSET($_POST['save_patient'])){
+		$itr_no = $_POST['itr_no'];
+		$family_no = $_POST['family_no'];
+		$firstname = $_POST['firstname'];
+		$middlename = $_POST['middlename'];
+		$lastname = $_POST['lastname'];
+		$birthdate = $_POST['month']."/".$_POST['day']."/".$_POST['year'];
+		$age = $_POST['age'];
+		$phil_health_no = $_POST['phil_health_no'];
+		$address = $_POST['address'];
+		$civil_status = $_POST['civil_status'];
+		$gender = $_POST['gender'];
+		$bp = $_POST['bp'];
+		$temp = $_POST['temp']."&deg;C";
+		$pr = $_POST['pr'];
+		$rr = $_POST['rr'];
+		$wt= $_POST['wt']."kg";
+		$ht = $_POST['ht'];
+		$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+		$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$itr_no'") or die(mysqli_error());
+		$c1 = $q1->num_rows;
+		if($c1 > 0){
+				echo "<script>alert('ITR No. must not be the same!')</script>";
+		}else{
+			$conn->query("INSERT INTO `itr` VALUES('$itr_no', '$family_no', '$phil_health_no', '$firstname', '$middlename', '$lastname', '$birthdate', '$age', '$address', '$civil_status', '$gender', '$bp', '$temp', '$pr', '$rr', '$wt', '".addslashes($ht)."')") or die(mysqli_error());
+			header("location: patient.php");	
+		}
+	}
+<?php
+	if(ISSET($_POST['save_d'])){
+		$tooth = $_POST['tooth'];
+		$date = date("Y-m-d", strtotime("+8 HOURS"));
+		$dentist = $_POST['dentist'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysql_error());
+		$conn->query("INSERT INTO `dental` VALUES('', '$date', '$dentist', '$tooth', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Dental' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_dental_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_f'])){
+		$q = $conn->query("SELECT * FROM `complaints` WHERE `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		$f = $q->fetch_array();
+		$requested_by = $_POST['requested_by'];
+		$date_of_request = date("Y-m-d", strtotime($f['date']));
+		$color = $_POST['color'];
+		$consistency = $_POST['consistency'];
+		$occult_blood = $_POST['occult_blood'];
+		$others_chem = $_POST['others_chem'];
+		$pus_cells = $_POST['pus_cells'];
+		$rbc = $_POST['rbc'];
+		$fat_globules = $_POST['fat_globules'];
+		$ova = $_POST['ova'];
+		$larva = $_POST['larva'];
+		$adult_forms = $_POST['adult_forms'];
+		$cyst = $_POST['cyst'];
+		$trophozoites = $_POST['trophozoites'];
+		$others_pro = $_POST['others_pro'];
+		$remarks = $_POST['remarks'];
+		$date_reported = date("Y-m-d", strtotime("+8 HOURS"));
+		$pathologist = $_POST['pathologist'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$medical_technologist = $_POST['medical_technologist'];
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `fecalisys` VALUES('', '$date_of_request', '$requested_by', '$color', '$consistency', '$pus_cells', '$rbc', '$fat_globules', '$occult_blood', '$others_chem', '$ova', '$larva', '$adult_forms', '$cyst', '$trophozoites', '$others_pro', '$remarks', '$date_reported', '$pathologist', '$medical_technologist', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Fecalysis' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_fecalysis_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_h'])){
+		$date_requested = date("Y-m-d", strtotime($_POST['date_requested']));
+		$requested_by = $_POST['requested_by'];
+		$hemoglobin = $_POST['hemoglobin'];
+		$hematocrit = $_POST['hematocrit'];
+		$rbc_count = $_POST['rbc_count'];
+		$wbc_count = $_POST['wbc_count'];
+		$neutrophil = $_POST['neutrophil'];
+		$segmenters = $_POST['segmenters'];
+		$stabs = $_POST['stabs'];
+		$lymphocytes = $_POST['lymphocytes'];
+		$monocyte = $_POST['monocyte'];
+		$eosinophil = $_POST['eosinophil'];
+		$basophil = $_POST['basophil'];
+		$total = $_POST['total'];
+		$platelet = $_POST['platelet'];
+		$bleeding_time = $_POST['bleeding_time'];
+		$clotting_time = $_POST['clotting_time'];
+		$abo_group = $_POST['abo_group'];
+		$rh_group = $_POST['rh_group'];
+		$remarks = $_POST['remarks'];
+		$pathologist = $_POST['pathologist'];
+		$medical_technologist = $_POST['medical_technologist'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `hematology` VALUES('', '$date_requested', '$requested_by', '$hemoglobin', '$hematocrit', '$rbc_count', '$wbc_count', '$platelet', '$bleeding_time', '$clotting_time', '$neutrophil', '$segmenters', '$stabs', '$lymphocytes', '$monocyte', '$eosinophil', '$basophil', '$total', '$abo_group', '$rh_group', '$remarks', '$pathologist', '$medical_technologist', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Hematology' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_hematology_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_u'])){
+		$date_of_request = $_POST['date_of_request'];
+		$color = $_POST['color'];
+		$transparency = $_POST['transparency'];
+		$specific_gravity = $_POST['specific_gravity'];
+		$ph = $_POST['ph'];
+		$sugar = $_POST['sugar'];
+		$protein = $_POST['protein'];
+		$pregnacy_test = $_POST['pregnancy_test'];
+		$pus_cells = $_POST['pus_cells'];
+		$rbc = $_POST['rbc'];
+		$cast = $_POST['cast'];
+		$urates = $_POST['urates'];
+		$uric_acid = $_POST['uric_acid'];
+		$cal_ox = $_POST['cal_ox'];
+		$epith_cells = $_POST['epith_cells'];
+		$mucus_threads = $_POST['mucus_threads'];
+		$others = $_POST['others'];
+		$pathologist = $_POST['pathologist'];
+		$medical_technologist = $_POST['medical_technologist'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `urinalysis` VALUES('', '$date_of_request', '$color', '$transparency', '$specific_gravity', '$ph', '$sugar', '$protein', '$pregnacy_test', '$pus_cells', '$rbc', '$cast', '$urates', '$uric_acid', '$cal_ox', '$epith_cells', '$mucus_threads', '$others', '$pathologist', '$medical_technologist', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Urinalysis' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_urinalysis_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_r'])){
+		$diagnosis = $_POST['diagnosis'];
+		$type_of_disability = $_POST['type_of_disability'];
+		$subjective = $_POST['subjective'];
+		$objective = $_POST['objective'];
+		$assessment = $_POST['assessment'];
+		$plan = $_POST['plan'];
+		$date = date('m/d/Y', strtotime('+8 HOURS'));
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `rehabilitation` VALUES('', '$diagnosis', '$type_of_disability', '$subjective', '$objective', '$assessment', '$plan', '$date', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Rehabilitation' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_rehabilitation_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_s'])){
+		$name_of_collection_unit = $_POST['name_of_collection_unit'];
+		$date_of_submission = date("Y-m-d", strtotime("+8 HOURS"));
+		$disease_classification = $_POST['disease_classification'];
+		$site = $_POST['site'];
+		$reason_for_examination = $_POST['reason_for_examination'];
+		$case_no = $_POST['case_no'];
+		$specimen1 = $_POST['specimen1'];
+		$specimen2 = $_POST['specimen2'];
+		$specimen3 = $_POST['specimen3'];
+		$date_of_collection1 = date("Y-m-d", strtotime($_POST['date_of_collection1']));
+		$date_of_collection2 = date("Y-m-d", strtotime($_POST['date_of_collection2']));
+		$date_of_collection3 = date("Y-m-d", strtotime($_POST['date_of_collection3']));
+		$specimen_collector = $_POST['specimen_collector'];
+		$remarks = $_POST['remarks'];
+		$lab_serial_no1 = $_POST['lab_serial_no1'];
+		$lab_serial_no2 = $_POST['lab_serial_no2'];
+		$lab_serial_no3 = $_POST['lab_serial_no3'];
+		$specimen_1 = $_POST['specimen_1'];
+		$specimen_2 = $_POST['specimen_2'];
+		$specimen_3 = $_POST['specimen_3'];
+		$visual_appearance1 = $_POST['visual_appearance1'];
+		$visual_appearance2 = $_POST['visual_appearance2'];
+		$visual_appearance3 = $_POST['visual_appearance3'];
+		$reading = $_POST['reading'];
+		$date_of_examination = date("Y-m-d", strtotime($_POST['date_of_examination']));
+		$examined_by = $_POST['examined_by'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `sputum` VALUES('', '$name_of_collection_unit', '$date_of_submission', '$disease_classification', '$site', '$reason_for_examination', '$case_no', '$specimen1', '$specimen2', '$specimen3', '$date_of_collection1', '$date_of_collection2', '$date_of_collection3', '$specimen_collector', '$remarks', '$lab_serial_no1', '$lab_serial_no2', '$lab_serial_no3', '$specimen_1', '$specimen_2', '$specimen_3', '$visual_appearance1', '$visual_appearance2', '$visual_appearance3', '$reading', '$date_of_examination', '$examined_by', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Sputum' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_sputum_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_x'])){
+		$case_no = $_POST['case_no'];
+		$referred_by = $_POST['referred_by'];
+		$clinical_impression = $_POST['clinical_impression'];
+		$room_bed_no = $_POST['room_bed_no'];
+		$type_of_examination = $_POST['type_of_examination'];
+		$date_taken = date('Y-m-d', strtotime('+8 HOURS'));
+		$radiologist = $_POST['radiologist'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `radiological` VALUES('', '$case_no', '$referred_by', '$clinical_impression', '$room_bed_no', '$type_of_examination', '$date_taken', '$radiologist', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Xray' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_xray_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_p'])){
+		$civil_status = $_POST['civil_status'];
+		$date = date("Y-m-d", strtotime($_POST['date']));
+		$chief_complain = $_POST['chief_complain'];
+		$attending_physician = $_POST['attending_physician'];
+		$lmp = $_POST['lmp'];
+		$ga_by_lmp = $_POST['ga_by_lmp'];
+		$edc_by_lmp = $_POST['edc_by_lmp'];
+		$fhr = $_POST['fhr'];
+		$ga_by_sonar = $_POST['ga_by_sonar'];
+		$edc_by_utz = $_POST['edc_by_utz'];
+		$pregnancy_age = $_POST['pregnancy_age'];
+		$biparietal_diameter = $_POST['biparietal_diameter'];
+		$biparietal_diameter_eq = $_POST['biparietal_diameter_eq'];
+		$head_circumference = $_POST['head_circumference'];
+		$head_circumference_eq = $_POST['head_circumference_eq'];
+		$abdominal_circumference = $_POST['abdominal_circumference'];
+		$abdominal_circumference_eq = $_POST['abdominal_circumference_eq'];
+		$femoral_length =  $_POST['femoral_length'];
+		$femoral_length_eq =  $_POST['femoral_length_eq'];
+		$crown_rump_length = $_POST['crown_rump_length'];
+		$crown_rump_length_eq = $_POST['crown_rump_length_eq'];
+		$mean_gest_sac_diameter = $_POST['mean_gest_sac_diameter'];
+		$mean_gest_sac_diameter_eq = $_POST['mean_gest_sac_diameter_eq'];
+		$average_fetal_weight = $_POST['average_fetal_weight'];
+		$gestation = $_POST['gestation'];
+		$presentation_lie = $_POST['presentation_lie'];
+		$amniotic_fluid = $_POST['amniotic_fluid'];
+		$placenta_location = $_POST['placenta_location'];
+		$previa = $_POST['previa'];
+		$placenta_grade = $_POST['placenta_grade'];
+		$fetal_activity = $_POST['fetal_activity'];
+		$comments = $_POST['comments'];
+		$radiologist = $_POST['radiologist'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", 'root', '', 'hcpms') or die(mysqli_error());
+		$conn->query("INSERT INTO `prenatal` VALUES('', '$date', '$chief_complain', '$attending_physician', '$lmp', '$ga_by_lmp', '$edc_by_lmp', '$fhr', '$ga_by_sonar', '$edc_by_utz', '$pregnancy_age', '$biparietal_diameter', '$biparietal_diameter_eq', '$head_circumference', '$head_circumference_eq', '$abdominal_circumference', '$abdominal_circumference_eq', '$femoral_length', '$femoral_length_eq', '$crown_rump_length', '$crown_rump_length_eq', '$mean_gest_sac_diameter', '$mean_gest_sac_diameter_eq', '$average_fetal_weight', '$gestation', '$presentation_lie', '$amniotic_fluid', '$placenta_location', '$previa', '$placenta_grade', '$fetal_activity', '$comments', '$radiologist', '$itr_no', '$user_id', '$month', '$year') ") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Prenatal' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_prenatal_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_patient'])){
+		$case_no = $_POST['case_no'];
+		$nhts = $_POST['nhts'];
+		$contact = $_POST['contact'];
+		$philhealth = $_POST['philhealth'];
+		$pat_firstname = $_POST['pat_firstname'];
+		$pat_middlename = $_POST['pat_middlename'];
+		$pat_lastname = $_POST['pat_lastname'];
+		$age = $_POST['age'];
+		$religion = $_POST['religion'];
+		$address = $_POST['address'];
+		$occupation = $_POST['occupation'];
+		$date_of_birth = $_POST['date_of_birth'];
+		$date_of_admission = $_POST['admission_month']."/".$_POST['admission_day']."/".$_POST['admission_year'];
+		$time_of_admission = $_POST['time_of_admission'];
+		$spouse_firstname = $_POST['spouse_firstname'];
+		$spouse_middlename = $_POST['spouse_middlename'];
+		$spouse_lastname = $_POST['spouse_lastname'];
+		$spouse_age = $_POST['spouse_age'];
+		$spouse_religion = $_POST['spouse_religion'];
+		$spouse_occupation = $_POST['spouse_occupation'];
+		$G = $_POST['g'];
+		$T = $_POST['t'];
+		$A = $_POST['a'];
+		$L = $_POST['l'];
+		$lmp = $_POST['lmp'];
+		$edc = $_POST['edc'];
+		$aog = $_POST['aog'];
+		$fetal_position = $_POST['fetal_position'];
+		$fh = $_POST['fh'];
+		$fhb = $_POST['fhb'];
+		$loc = $_POST['loc'];
+		$admitting_diagnosis = $_POST['admitting_diagnosis'];
+		$midwife = $_POST['midwife'];
+		$date_of_delivery = $_POST['delivery_month']."/".$_POST['delivery_day']."/".$_POST['delivery_year'];
+		$time1 = $_POST['time1'];
+		$sex = $_POST['sex'];
+		$wt = $_POST['wt'];
+		$baby_firstname = $_POST['baby_firstname'];
+		$baby_middlename = $_POST['baby_middlename'];
+		$baby_lastname = $_POST['baby_lastname'];
+		$hepa = $_POST['hepa'];
+		$bcg = $_POST['bcg'];
+		$nbs = $_POST['nbs'];
+		$date_of_discharge = $_POST['date_month']."/".$_POST['date_day']."/".$_POST['date_year'];
+		$time_of_discharge = $_POST['time_of_discharge'];
+		$final_diagnosis = $_POST['final_diagnosis'];
+		$disposition_on_discharge = $_POST['disposition_on_discharge'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M");
+		$year = date("Y");
+		$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+		$conn->query("INSERT INTO `maternity_patient` VALUES('', '$case_no', '$nhts', '$contact', '$philhealth', '$pat_firstname', '$pat_middlename', '$pat_lastname', '$age', '$religion', '$address', '$occupation', '$date_of_birth', '$date_of_admission', '$time_of_admission', '$spouse_firstname', '$spouse_middlename', '$spouse_lastname', '$spouse_age', '$spouse_religion', '$spouse_occupation', '$G', '$T', '$A', '$L', '$lmp', '$edc', '$aog', '$fetal_position', '$fh', '$fhb', '$loc', '$admitting_diagnosis', '$midwife', '$date_of_delivery', '$time1', '$sex', '$wt', '$baby_firstname', '$baby_middlename', '$baby_lastname', '$hepa', '$bcg', '$nbs', '$date_of_discharge', '$time_of_discharge', '$final_diagnosis', '$disposition_on_discharge', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[id]' && `section` = 'Maternity' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_birth_record.php");
+		$conn->close();
+	}
+	if(ISSET($_POST['save_birth'])){
+		$date = $_POST['date'];
+		$time = $_POST['time'];
+		$chief_complaint = $_POST['chief_complaint'];
+		$history = $_POST['history'];
+		$lmp = $_POST['lmp'];
+		$edc = $_POST['edc'];
+		$aog = $_POST['aog'];
+		$g = $_POST['g'];
+		$p = $_POST['p'];
+		$a = $_POST['1'];
+		$b = $_POST['2'];
+		$c = $_POST['3'];
+		$d = $_POST['4'];
+		$bp1 = $_POST['bp1'];
+		$bp2 = $_POST['bp2'];
+		$pr = $_POST['pr'];
+		$rr = $_POST['rr'];
+		$t = $_POST['t'];
+		$head_neck = $_POST['head_neck'];
+		$chest = $_POST['chest'];
+		$heart = $_POST['heart'];
+		$abdomen = $_POST['abdomen'];
+		$fhb = $_POST['fhb'];
+		$loc = $_POST['loc'];
+		$extremities = $_POST['extremities'];
+		$vulva = $_POST['vulva'];
+		$vagina = $_POST['vagina'];
+		$cervix = $_POST['cervix'];
+		$uterus = $_POST['uterus'];
+		$bow = $_POST['bow'];
+		$presentation = $_POST['presentation'];
+		$vaginal_discharge = $_POST['vaginal_discharge'];
+		$staff = $_POST['staff'];
+		$itr_no = $_POST['itr_no'];
+		$user_id = $_POST['user_id'];
+		$month = date("M", strtotime("+8 HOURS"));
+		$year = date("Y", strtotime("+8 HOURS"));
+		$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+		$conn->query("INSERT INTO `birthing` VALUES('', '$date', '$time', '$chief_complaint', '$history', '$lmp', '$edc', '$aog', '$g', '$p', '$a', '$b', '$c', '$d', '$bp1', '$bp2', '$pr', '$rr', '$t', '$head_neck', '$chest', '$heart', '$abdomen', '$fhb', '$loc', '$extremities', '$vulva', '$vagina', '$cervix', '$uterus', '$bow', '$presentation', '$vaginal_discharge', '$staff', '$itr_no', '$user_id', '$month', '$year')") or die(mysqli_error());
+		$conn->query("UPDATE `complaints` SET `status` = 'Done' WHERE `itr_no` = '$_GET[itr_no]' && `section` = 'Maternity' && `com_id` = '$_GET[comp_id]'") or die(mysqli_error());
+		header("location:view_birthing_record.php");
+		$conn->close();
+	<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>
+		<div class = "panel panel-default">
+			<div class = "panel-heading">
+				<label>BIRTHING ADMISSION FORM</label>	<a style = "float:right; margin-top:-4px;" href = "birthing_pending.php?itr_no=<?php echo $_GET['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a>
+			</div>
+			<form method = "POST" enctype = "multipart/form-data">
+			<?php
+				$q = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$q1 = $conn->query("SELECT * FROM `complaints` WHERE `com_id` = '$_GET[comp_id]' && `itr_no` = '$_GET[itr_no]' && `section` = 'Prenatal'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+				$f = $q->fetch_array();
+			?>	
+			<div class = "panel-body">
+				<div class = "alert alert-info">Basic Information</div>
+				<div style = "float:left; width:30%;">
+					<label>NAME:</label>
+					<br />
+					<label class = "text-muted"><?php echo $f['firstname']." ".substr($f['middlename'], 0,1).". ".$f['lastname']?></label>
+				</div>	
+				<div style = "float:left; width:10%;">	
+					<label>AGE:</label>
+					<br />
+					<label class = "text-muted"><?php echo $f['age']?></label>
+				</div>
+				<div style = "width:40%; float:left;">
+					<label>ADDRESS:</label>
+					<br />
+					<label class = "text-muted"><?php echo $f['address']?></label>
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px dotted #d3d3d3;"/>
+				
+				<div class = "form-inline">
+					<label>DATE:</label>
+					<input type = "date" name = "date" class = "form-control" />
+					<label style = "margin-left:50px;">TIME:</label>
+					<input type = "time" name = "time" class = "form-control"/>
+					<label>a.m / p.m.</label>
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>CHIEF COMPLAINT:</label>
+					<input type = "text" name = "chief_complaint" size = "60" class = "form-control" />
+				</div>
+				<br />
+				<div class = "form-group">
+					<label>HISTORY:</label>
+					<textarea name = "history" class = "form-control" style = "resize:none;"></textarea>
+				</div>
+				<br />
+				<center><label>OB GYNE HISTORY</label></center>
+				<hr style = "border:1px solid #000;" />
+				<div class = "form-inline" style = " border-right:1px solid #000; height:100%; width:30%; float:left;">
+					<label>LMP:</label>
+					<input type = "text" name = "lmp" class = "form-control" />
+					<br />
+					<label>EDC:</label>
+					<input style = "margin-left:2px;" type = "text" name = "edc" class = "form-control" />
+					<br />
+					<label>AOG:</label>
+					<input type = "text" name = "aog" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:60%; margin-left:10px; margin-top:30px; float:left;">
+					<label>OB SCORE:</label>
+					<label>G:</label>
+					<input type = "text" name = "g" size = "2" class = "form-control" />
+					<label>P</label>
+					<input type = "text" name = "p" size = "2" class = "form-control" />
+					<label>(</label>
+					<input type = "text" name = "1" size = "2" class = "form-control" />
+					<input type = "text" name = "2" size = "2" class = "form-control" />
+					<input type = "text" name = "3" size = "2" class = "form-control" />
+					<input type = "text" name = "4" size = "2" class = "form-control" />
+					<label>)</label>
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px solid #000;" />
+				<center><label>PHYSICAL EXAMINATION</label></center>
+				<div class = "form-inline">
+					<label>BP:</label>
+					<input type = "text" name = "bp1" size = "2" class = "form-control" />
+					<label>/</label>
+					<input type = "text" name = "bp2" size = "2" class = "form-control" />
+					<label>mmhg PR:</label>
+					<input type = "text" name = "pr" size = "5" class = "form-control" />
+					<label>bpm RR:</label>
+					<input type = "text" name = "rr" size = "5" class = "form-control" />
+					<label>cpm T:</label>
+					<input type = "text" name = "t" size = "4" class = "form-control" />
+					<label>⁰C</label>
+				</div>
+				<br />
+				<div style = "float:left; width:25%;" class = "form-inline">
+					<label>HEAD & NECK</label>
+					<br />
+					<input type = "text" name = "head_neck" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>CHEST</label>
+					<br />
+					<input type = "text" name = "chest" class = "form-control" />
+				</div>
+				<div style = "float:left; width:25%;"  class = "form-inline">
+					<label>HEART</label>
+					<br />
+					<input type = "text" name = "heart" class = "form-control" />
+				</div>
+				<br />
+				<br />
+				<br />
+				<br style = "clear:both;"/>
+				<div style = "float:left; width:25%;"  class = "form-inline">
+					<label>ABDOMEN: UTERINE SIZE:</label>
+					<input type = "text" name = "abdomen" class = "form-control" />
+					<label>cm FHB:</label>
+					<input type = "text" name = "fhb" class = "form-control" />
+					<label>bpm LOC:</label>
+					<input type = "text" name = "loc" class = "form-control" />
+				</div>
+				<div style = "float:left; width:25%;"  class = "form-inline">
+					<label>EXTREMITIES:</label>
+					<br />
+					<input type = "text" name = "extremities" class = "form-control" />
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px solid #000;" />
+				<center><label>INTERNAL EXAMINATION (IE)</label></center>
+				<br />
+				<div style = "float:left; width:25%;"  class = "form-inline">
+					<label>VULVA:</label>
+					<br />
+					<input type = "text" name = "vulva" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>VAGINA:</label>
+					<br />
+					<input type = "text" name = "vagina" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>CERVIX:</label>
+					<br />
+					<input type = "text" name = "cervix" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>UTERUS:</label>
+					<br />
+					<input type = "text" name = "uterus" class = "form-control" />
+				</div>
+				<br />
+				<br />
+				<br />
+				<br style = "clear:both;"/>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>BOW:</label>
+					<br />
+					<input type = "text" name = "bow" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>PRESENTATION:</label>
+					<br />
+					<input type = "text" name = "presentation" class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "float:left; width:25%;" >
+					<label>VAGINAL DISCHARGE:</label>
+					<br />
+					<input type = "text" name = "vaginal_discharge" class = "form-control" />
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px solid #000;" />
+				<div class = "form-inline">
+					<label>STAFF ON DUTY:</label>
+					<input type = "text" name = "staff" class = "form-control" />
+					<input type = "hidden" name = "itr_no" value = "<?php echo $_GET['itr_no']?>" />
+					<input type = "hidden" name = "user_id" value = "<?php echo $_SESSION['user_id']?>" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<button class = "btn btn-primary" name = "save_birth"><span class = "glyphicon glyphicon-save"></span> SAVE</button>
+				</div>
+			</div>
+			<?php require 'add_query.php'?>
+			</form>
+		</div>
+		 
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2023</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Patient Health Center Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" height = "55px" style = "float:left;"><label class = "navbar-brand">Health Center Patient Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>
+		
+		<div class = "panel panel-default">
+			<div class = "panel-heading">
+			<?php
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q2 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f2 = $q2->fetch_array();
+				$q = $conn->query("SELECT * FROM `birthing` WHERE `birth_id` = '$_GET[birth_id]' && `itr_no` = '$f2[itr_no]'") or die(mysqli_error());
+				$f = $q->fetch_array();
+			?>
+				<label>BIRTHING ADMISSSION RESULT FORM</label>	
+				<a style = "float:right; margin-top:-4px;" href = "birthing_record.php?itr_no=<?php echo $f2['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a>
+				<a style = "margin-right:5px; float:right; margin-top:-4px;" href = "birthing_print.php?itr_no=<?php echo $f2['itr_no']?>&birth_id=<?php echo $_GET['birth_id']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-print"></span> PRINT</a>
+			</div>
+			<form method = "POST" enctype = "multipart/form-data">
+			<div class = "panel-body">
+				<div class = "alert alert-info">Basic Information</div>
+				<div style = "float:left; width:30%;">
+					<label>NAME:</label>
+					<br />
+					<label class = "text-muted"><?php echo $f2['firstname']." ".substr($f2['middlename'], 0,1).". ".$f2['lastname']?></label>
+				</div>	
+				<div style = "width:10%; float:left;">	
+					<label>AGE:</label>
+					<br />
+					<label class = "text-muted"><?php echo $f2['age']?></label>
+				</div>
+				<div style = "float:left; width:40%;">
+					<label>ADDRESS:</label>
+					<br />
+					<label class = "text-muted"><?php echo $f2['address']?></label>
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px dotted #d3d3d3;" />
+				<div class = "form-inline">
+					<label>DATE:</label>
+					<input type = "text" class = "form-control" disabled = "disabled" value = "<?php echo date("m/d/Y")?>" />
+					<label style = "margin-left:10px;">TIME:</label>
+					<input type = "text" class = "form-control" disabled = "disabled" size = "10" value = "<?php echo date('h:i:s a', strtotime('+8HOURS'))?>">
+					<label>a.m / p.m.</label>
+				</div>
+				<br />
+				<div class = "group">
+					<label>CHIEF COMPLAINT:</label>
+					<textarea name = "chief_complaint" disabled = "disabled" class = "form-control" style = "resize:none;"><?php echo $f['chief_complaint']?></textarea>
+				</div>
+				<br />
+				<div class = "form-group">
+					<label>HISTORY:</label>
+					<textarea name = "history" disabled = "disabled" class = "form-control" style = "resize:none;"><?php echo $f['history']?></textarea>
+				</div>
+				<br />
+				<center><label>OB GYNE HISTORY</label></center>
+				<hr style = "border:1px solid #000;" />
+				<div class = "form-inline" style = " border-right:1px solid #000; height:100%; width:30%; float:left;">
+					<label>LMP:</label>
+					<input type = "text" disabled = "disabled" value = "<?php echo $f['lmp']?>" name = "lmp" class = "form-control" />
+					<br />
+					<label>EDC:</label>
+					<input style = "margin-left:2px;" disabled = "disabled" value = "<?php echo $f['edc']?>"  type = "text" name = "edc" class = "form-control" />
+					<br />
+					<label>AOG:</label>
+					<input type = "text" name = "aog" disabled = "disabled" value = "<?php echo $f['aog']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:60%; margin-left:10px; margin-top:30px; float:left;">
+					<label>OB SCORE:</label>
+					<label>G:</label>
+					<input type = "text" name = "g" disabled = "disabled" value = "<?php echo $f['G']?>"  size = "2" class = "form-control" />
+					<label>P</label>
+					<input type = "text" name = "p" disabled = "disabled" value = "<?php echo $f['P']?>"  size = "2" class = "form-control" />
+					<label>(</label>
+					<input type = "text" name = "1" disabled = "disabled" value = "<?php echo $f['1']?>"  size = "2" class = "form-control" />
+					<input type = "text" name = "2" disabled = "disabled" value = "<?php echo $f['2']?>"  size = "2" class = "form-control" />
+					<input type = "text" name = "3" disabled = "disabled" value = "<?php echo $f['3']?>"  size = "2" class = "form-control" />
+					<input type = "text" name = "4" disabled = "disabled" value = "<?php echo $f['4']?>"  size = "2" class = "form-control" />
+					<label>)</label>
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px solid #000;" />
+				<center><label>PHYSICAL EXAMINATION</label></center>
+				<br />
+				<div class = "form-inline">
+					<label>BP:</label>
+					<input type = "text" name = "bp1" disabled = "disabled" value = "<?php echo $f['bp1']?>"  size = "2" class = "form-control" />
+					<label>/</label>
+					<input type = "text" name = "bp2" size = "2" disabled = "disabled" value = "<?php echo $f['bp2']?>"  class = "form-control" />
+					<label>mmhg PR:</label>
+					<input type = "text" name = "pr" disabled = "disabled" value = "<?php echo $f['pr']?>"  size = "5" class = "form-control" />
+					<label>bpm RR:</label>
+					<input type = "text" name = "rr" disabled = "disabled" value = "<?php echo $f['rr']?>"  size = "5" class = "form-control" />
+					<label>cpm T:</label>
+					<input type = "text" name = "t" disabled = "disabled" value = "<?php echo $f['T']?>"  size = "4" class = "form-control" />
+					<label>⁰C</label>
+				</div>
+				<br />
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>HEAD & NECK</label>
+					<br />
+					<input type = "text" name = "head_neck" disabled = "disabled" value = "<?php echo $f['head_neck']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>CHEST</label>
+					<br />
+					<input type = "text" name = "chest" disabled = "disabled" value = "<?php echo $f['chest']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>HEART</label>
+					<br />
+					<input type = "text" name = "heart" disabled = "disabled" value = "<?php echo $f['heart']?>"  class = "form-control" />
+				</div>
+				<br />
+				<br />
+				<br />
+				<br style = "clear:both;"/>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>ABDOMEN: UTERINE SIZE:</label>
+					<input type = "text" name = "abdomen" disabled = "disabled" value = "<?php echo $f['abdomen']?>"  class = "form-control" />
+					<label>cm FHB:</label>
+					<input type = "text" name = "fhb" disabled = "disabled" value = "<?php echo $f['fhb']?>"  class = "form-control" />
+					<label>bpm LOC:</label>
+					<input type = "text" name = "loc" disabled = "disabled" value = "<?php echo $f['loc']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>EXTREMITIES:</label>
+					<br />
+					<input type = "text" name = "extremities" disabled = "disabled" value = "<?php echo $f['extremities']?>"  class = "form-control" />
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px solid #000;" />
+				<center><label>INTERNAL EXAMINATION (IE)</label></center>
+				<br />
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>VULVA:</label>
+					<br />
+					<input type = "text" name = "vulva" disabled = "disabled" value = "<?php echo $f['vulva']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>VAGINA:</label>
+					<br />
+					<input type = "text" name = "vagina" disabled = "disabled" value = "<?php echo $f['vagina']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>CERVIX:</label>
+					<br />
+					<input type = "text" name = "cervix" disabled = "disabled" value = "<?php echo $f['cervix']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>UTERUS:</label>
+					<br />
+					<input type = "text" name = "uterus" disabled = "disabled" value = "<?php echo $f['uterus']?>"  class = "form-control" />
+				</div>
+				<br />
+				<br />
+				<br />
+				<br style = "clear:both;"/>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>BOW:</label>
+					<br />
+					<input type = "text" name = "bow" disabled = "disabled" value = "<?php echo $f['bow']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>PRESENTATION:</label>
+					<br />
+					<input type = "text" name = "presentation" disabled = "disabled" value = "<?php echo $f['presentation']?>"  class = "form-control" />
+				</div>
+				<div class = "form-inline" style = "width:25%; float:left;">
+					<label>VAGINAL DISCHARGE:</label>
+					<input type = "text" name = "vaginal_discharge" disabled = "disabled" value = "<?php echo $f['vaginal_discharge']?>"  class = "form-control" />
+				</div>
+				<br style = "clear:both;"/>
+				<hr style = "border:1px solid #000;" />
+				<div class = "form-inline">
+					<label>STAFF ON DUTY:</label>
+					<input type = "text" name = "staff" disabled = "disabled" value = "<?php echo $f['staff']?>"  class = "form-control" />
+				</div>
+				<br />
+			</div>
+		</div>
+		</form>
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2023</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>	
+		<div class = "panel panel-success">
+			<div class = "panel-heading">
+				<label>MATERNITY REQUEST</label>
+				<a style = "float:right; margin-top:-4px;" href = "view_maternity.php?itr_no=<?php echo $_GET['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a>
+			</div>
+			<div class = "panel-body">
+			<?php
+				$id = $_GET['itr_no'];
+				$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$id'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+				$q = $conn->query("SELECT * FROM `complaints` WHERE `status` = 'Pending' && `section` = 'Maternity' && `itr_no` = '$id'") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+					echo "<label style = 'color:#3399f3;'>".$f1['firstname']." ".$f1['lastname']."</label>"."<textarea  style = 'resize:none;' disabled = 'disabled' class = 'form-control'>".$f['remark']."</textarea>".$f['date']."<br /><a class = 'btn btn-primary' href = 'birthing.php?itr_no=".$id."&comp_id=".$f['com_id']."'><span class = 'glyphicon glyphicon-check'></span> Confirm</a><br /><br />";
+				}	
+			?>
+		</div>
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2023</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "view_birthing_record.php" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<?php
+				$a = $_GET['itr_no'];
+				$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$a'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+			?>
+			<div class = "panel-heading">
+				<h4>Birthing Admission Record / <?php echo $f1['firstname']." ".$f1['lastname']?></h4>
+			</div>
+			<div class = "panel-body">
+		<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Time</th>
+					<th>Staff</th>
+					<th><center>ACTION</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php
+				$q2 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f2 = $q2->fetch_array();
+				$q = $conn->query("SELECT * FROM `birthing` WHERE `itr_no` = '$f2[itr_no]'") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo date("m/d/Y", strtotime($f['date']))?></td>
+					<td><?php echo date("h:i a", strtotime($f['time']))?></td>
+					<td><?php echo $f['staff']?></td>
+					<td><center><a class = "btn btn-info" href = "birthing_form.php?itr_no=<?php echo $f['itr_no']?>&birth_id=<?php echo $f['birth_id']?>"><span class = "glyphicon glyphicon-search"></span> View Detail</a><center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+			</div>
+		</div>
+			
+		<br />
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2023</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false,
+					"order": "DESC"
+				});
+			});
+		</script>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><i class = "glyphicon glyphicon-log-out"></i> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>DENTAL</label></center>
+			</div>
+		</div>
+		<a href = "view_dental_record.php" id = "d_record" style = "float:right; margin-right:10px;" href = "" class = "btn btn-success"><span class = "glyphicon glyphicon-book"></span> DENTAL RECORD</a>
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<div class = "panel-heading">
+				<h4>INDIVIDUAL TREATMENT RECORD</h4>
+			</div>
+		</div>
+		<br />
+		<table id = "table" class = "display" cellspacing = "0" >
+			<thead>
+				<tr>
+					<th>ITR No</th>
+					<th>Name</th>
+					<th>Birthdate</th>
+					<th>Age</th>
+					<th>Address</th>
+					<th>Civil Status</th>
+					<th>Gender</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `itr` ORDER BY `itr_no` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo $f['itr_no']?></td>
+					<td><?php echo $f['firstname']." ".$f['lastname'] ?></td>
+					<td><?php echo $f['birthdate'] ?></td>
+					<td><?php echo $f['age'] ?></td>
+					<td><?php echo $f['address'] ?></td>
+					<td><?php echo $f['civil_status'] ?></td>
+					<td><?php echo $f['gender'] ?></td>
+					<td>
+						<center>
+							<a href = "view_dental.php?itr_no=<?php echo $f['itr_no']?>"class = "btn btn-sm btn-info"><span class = "glyphicon glyphicon-search"></span> VIEW DETAIL</a> 
+						</center>
+					</td>
+				</tr>
+			<?php
+				}
+					$conn->close();
+			?>	
+			</tbody>
+		</table>
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2023</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+		<script src ="js/add_dental.js"></script>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shorcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><i class = "glyphicon glyphicon-log-out"></i> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>DENTAL</label></center>
+			</div>
+		</div>
+		
+		<div class = "panel panel-default">
+			<div class = "panel-heading">
+				<?php 
+					$q = $conn->query("SELECT * FROM `dental` NATURAL JOIN `itr` WHERE `itr_no` = '$_GET[itr_no]' && `dental_no` = '$_GET[dental_no]'") or die(mysqli_error());
+					$f = $q->fetch_array();
+				?>
+				<label>DENTAL RESULT FORM</label>	
+				<a style = "float:right; margin-top:-4px;" href = "dental_record.php?itr_no=<?php echo $f['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a>
+			</div>
+			<form method = "POST" enctype = "multipart/form-data">
+			<div class = "panel-body">
+				<div class = "alert alert-info">Basic Information</div>
+					<div style = "width:30%; float:left;">
+						<label style = "font-size:18px;">Name</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['firstname']." ".$f['middlename']." ".$f['lastname']?></label>
+					</div>
+					<div style = "width:20%; float:left;">
+						<label style = "font-size:18px;">Age</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['age']?></label>
+					</div>
+					<div style = "width:20%; float:left;">
+						<label style = "font-size:18px;">Gender</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['gender']?></label>
+					</div>
+					<div style = "width:20%; float:left;">
+						<label style = "font-size:18px;">BP</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['BP']?></label>
+					</div>
+					<br />
+					<br />
+					<br />
+					<br style = "clear:both;"/>
+					<div style = "float:left; width:50%;">
+						<label style = "font-size:18px;">Address</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['address']?></label>				
+					</div>
+					<div style = "float:left; width:20%;">
+						<label style = "font-size:18px;">Teeth/Tooth</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['tooth']?></label>
+					</div>	
+					<div style = "float:left; width:25%;">
+						<label style = "font-size:18px;">Dentist</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['dentist']?></label>
+					</div>
+					<br style = "clear:both;" />
+					<br />
+					<br />
+			</div>
+			<?php require'add_query.php'?>
+			</form>
+		</div>
+		 
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2023</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><i class = "glyphicon glyphicon-log-out"></i> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>DENTAL</label></center>
+			</div>
+		</div>
+		<div class = "panel panel-default">
+			<div class = "panel-heading">
+				<?php 
+					$q = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+					$f = $q->fetch_array();
+				?>
+				<label>DENTAL RESULT FORM</label>	<a style = "float:right; margin-top:-4px;" href = "dental_pending.php?itr_no=<?php echo $f['itr_no']?>&comp_id=<?php echo $_GET['comp_id']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a>
+			</div>
+			<form method = "POST" enctype = "multipart/form-data">
+			<div class = "panel-body">
+				<div class = "alert alert-info">Basic Information</div>
+					<div style = "width:30%; float:left;">
+						<label style = "font-size:18px;">Name</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['firstname']." ".$f['middlename']." ".$f['lastname']?></label>
+					</div>
+					<div style = "width:20%; float:left;">
+						<label style = "font-size:18px;">Age</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['age']?></label>
+					</div>
+					<div style = "width:20%; float:left;">
+						<label style = "font-size:18px;">Gender</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['gender']?></label>
+					</div>
+					<div style = "width:20%; float:left;">
+						<label style = "font-size:18px;">BP</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['BP']?></label>
+					</div>
+					<br />
+					<br />
+					<br />
+					<br style = "clear:both;"/>
+					<div style = "float:left; width:50%;">
+						<label style = "font-size:18px;">Address</label>
+						<br />
+						<label style = "font-size:18px;" class = "text-muted"><?php echo $f['address']?></label>				
+					</div>
+					<div class = "form-group" style = "float:left; width:20%;">
+						<label style = "font-size:18px;">Teeth/Tooth</label>
+						<input class = "form-control" style = "width:30%;" min = "0" max = "30	" name = "tooth" step = "any" type = "number" required = "required" />
+					</div>	
+					<div class = "form-group" style = "float:left; width:25%;">
+						<label style = "font-size:18px;">Dentist</label>
+						<select class = "form-control" name = "dentist" required = "required" />
+							<option value = "">Please select an option</option>
+							<option value = "Dr. Machete Lazada">Dr. Machete Lazada</option>
+						</select>
+						<input type = "hidden" value = "<?php echo $f['itr_no'] ?>" name = "itr_no" />
+						<input type = "hidden" value = "<?php echo $_SESSION['user_id'] ?>" name = "user_id" />
+					</div>
+					<br style = "clear:both;" />
+					<br />
+					<div class = "form-inline">
+						<button class = "btn btn-primary" name = "save_d" ><span class = "glyphicon glyphicon-save"></span> SAVE</button>
+					</div>
+			</div>
+			<?php require'add_query.php'?>
+			</form>
+		</div>
+		 
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><i class = "glyphicon glyphicon-log-out"></i> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>DENTAL</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "view_dental_record.php?itr_no=<?php echo $_GET['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<?php
+				$q1 = $conn->query("SELECT * FROM `dental` NATURAL JOIN `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+			?>
+			<div class = "panel-heading">
+				<h4>Dental Record / <?php echo $f1['firstname']." ".$f1['lastname']?></h4>
+			</div>
+			<div class = "panel-body">
+				<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Dentist</th>
+					<th>Tooth/Teeth</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `dental` NATURAL JOIN `itr` WHERE `itr_no` = '$_GET[itr_no]' ORDER BY `date` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo date("m/d/Y", strtotime($f['date']))?></td>
+					<td><?php echo $f['dentist']?></td>
+					<td><?php echo $f['tooth']?></td>
+					<td><center><a class = "btn btn-info" href = "dental_form.php?itr_no=<?php echo $f['itr_no']?>&dental_no=<?php echo $f['dental_no']?>"><span class = "glyphicon glyphicon-search"></span> View Detail</a><center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+			</div>
+		</div>
+			
+		<br />
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false,
+					"order": "DESC"
+				});
+			});
+		</script>
+</html>
+<?php
+	$id = $_GET['id'];
+	$lastname = $_GET['lastname'];
+
+	if(ISSET($_POST['edit_query'])){
+		$family_no = $_POST['family_no'];
+		$firstname = $_POST['firstname'];
+		$middlename = $_POST['middlename'];
+		$lastname = $_POST['lastname'];
+		$birthdate = $_POST['birthdate'];
+		$age = $_POST['age'];
+		$phil_health_no = $_POST['phil_health_no'];
+		$address = $_POST['address'];
+		$civil_status = $_POST['civil_status'];
+		$gender = $_POST['gender'];
+		$bp = $_POST['bp'];
+		$temp = $_POST['temp'];
+		$pr = $_POST['pr'];
+		$rr = $_POST['rr'];
+		$wt= $_POST['wt'];
+		$ht = $_POST['ht'];
+		$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+		$conn->query("UPDATE `itr` SET `family_no` = '$family_no', `phil_health_no` = '$phil_health_no', `firstname` = '$firstname', `middlename` = '$middlename', `lastname` = '$lastname', `birthdate` = '$birthdate', `age` = '$age', `address` = '$address', `civil_status` = '$civil_status', `sex` = '$gender', `BP` = '$bp', `TEMP` = '$temp', `PR` = '$pr', `RR` = '$rr', `WT` = '$wt', `HT` = '$ht' WHERE `itr_no` = '$_GET[id]' && `lastname` = '$_GET[lastname]'") or die(mysqli_error()); 
+			header("location:view_dental.php?id=".$id."&lastname=".$lastname."");
+			$conn->close();	
+	}
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>FECALYSIS</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "view_fecalysis_record.php?itr_no=<?php echo $_GET['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<?php
+				$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+			?>
+			<div class = "panel-heading">
+				<h4>Fecalysis Record / <?php echo $f1['firstname']." ".$f1['lastname']?></h4>
+			</div>
+			<div class = "panel-body">
+				<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>Date Reported</th>
+					<th>Pathologist</th>
+					<th>Medical Technologist</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `fecalisys` NATURAL JOIN `itr` WHERE `itr_no` = '$_GET[itr_no]' ORDER BY `date_reported` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo date("m/d/Y", strtotime($f['date_reported']))?></td>
+					<td><?php echo $f['pathologist']?></td>
+					<td><?php echo $f['medical_technologist']?></td>
+					<td><center><a class = "btn btn-info" href = "fecalysis_form.php?itr_no=<?php echo $f['itr_no']?>&fecalysis_id=<?php echo $f['fecalisys_id']?>"><span class = "glyphicon glyphicon-search"></span> View Detail</a><center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+			</div>
+		</div>
+			
+		<br />
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false,
+					"order": "DESC"
+				});
+			});
+		</script>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>HEMATOLOGY</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "view_hematology_record.php?itr_no=<?php echo $_GET['itr_no']?>?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<?php
+				$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+			?>
+			<div class = "panel-heading">
+				<h4>Hematology Record / <?php echo $f1['firstname']." ".$f1['lastname']?></h4>
+			</div>
+			<div class = "panel-body">
+				<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Pathologist</th>
+					<th>Medical Technologist</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `hematology` NATURAL JOIN `itr` WHERE `itr_no` = '$_GET[itr_no]' ORDER BY `date_requested` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo date("m/d/Y", strtotime($f['date_requested']))?></td>
+					<td><?php echo $f['pathologist']?></td>
+					<td><?php echo $f['medical_technologist']?></td>
+					<td><center><a class = "btn btn-info" href = "hematology_form.php?itr_no=<?php echo $f['itr_no']?>&hem_id=<?php echo $f['hem_id']?>"><span class = "glyphicon glyphicon-search"></span> View Detail</a><center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+			</div>
+		</div>
+			
+		<br />
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false,
+					"order": "DESC"
+				});
+			});
+		</script>
+		
+</html>
+<!DOCTYPE html>
+<html lang = "eng">
+	<head>
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "utf-8" />
+		<link rel = "shortcut icon" href = "images/logo.png">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+<body>
+	<div class = "navbar navbar-default navtop">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+	</div>
+		<div id = "sidelogin">
+			<form action = "login.php" enctype = "multipart/form-data" method = "POST" >
+				<label class = "lbllogin">Please Login Here...</label>
+				<br />
+				<hr /style = "border:1px dotted #000;">
+				<br />
+				<div class = "form-group">
+					<label for = "username">Username</label>
+					<input class = "form-control" type = "text" name = "username"  required = "required"/>
+				</div>
+				<br />
+				<div class = "form-group">
+					<label for = "password">Password</label>
+					<input class = "form-control" type = "password" name = "password" required = "required" />
+				</div>
+				<br />
+				<br />
+				<div class = "form-group">
+					<button class  = "btn btn-success form-control" type = "submit" name = "login" ><span class = "glyphicon glyphicon-log-in"></span> Login</button>
+				</div>
+			</form>
+		</div>	
+		<img src = "images/victorias.jpg" class = "background">			
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+</body>
+<?php
+	include("admin/script.php");
+?>
+</html>
+<?php
+	session_start();
+	if(ISSET($_POST['login'])){
+		$username = $_POST['username'];
+		$password = $_POST['password'];
+		$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+		$query = $conn->query("SELECT * FROM `user` WHERE `username` = '$username' && `password` = '$password'") or die(mysqli_error());
+		$fetch = $query->fetch_array();
+		$valid = $query->num_rows;
+		$section = $fetch['section'];	
+			if($valid > 0){
+				if($section == "Fecalysis"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: fecalysis.php");
+				}
+				if($section == "Maternity"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: maternity.php");
+				}
+				if($section == "Hematology"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: hematology.php");
+				}
+				if($section == "Dental"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: dental.php");
+				}
+				if($section == "Xray"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: xray.php");
+				}
+				if($section == "Rehabilitation"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: rehabilitation.php");
+				}
+				if($section == "Sputum"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: sputum.php");
+				}
+				if($section == "Urinalysis"){
+					$_SESSION['user_id'] = $fetch['user_id'];
+					header("location: urinalysis.php");
+				}
+			}else{
+				echo "<script>alert('Account Does Not Exist!')</script>";
+				echo "<script>window.location = 'index.php'</script>";
+			}
+						
+		
+		}
+		$conn->close();
+	<?php
+	session_start();
+	unset($_SESSION['user_id']);
+	header("location:index.php");
+  <!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px"><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>
+		<a href = "view_birthing_record.php"  style = "float:right; margin-right:10px;" class = "btn btn-success"><span class = "glyphicon glyphicon-book"></span> BIRTHING ADMISSION RECORD</a>
+		<a href = "view_prenatal_record.php"  style = "float:right; margin-right:10px;" class = "btn btn-success"><span class = "glyphicon glyphicon-book"></span> PRENATAL RECORD</a>
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<div class = "panel-heading">
+				<h4>INDIVIDUAL TREATMENT RECORD</h4>
+			</div>
+		</div>
+		<br />
+		<table id = "table" class = "display" cellspacing = "0" >
+			<thead>
+				<tr>
+					<th>ITR No</th>
+					<th>Name</th>
+					<th>Birthdate</th>
+					<th>Age</th>
+					<th>Address</th>
+					<th>Civil Status</th>
+					<th>Gender</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `itr` WHERE `gender` = 'Female' ORDER BY `itr_no` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo $f['itr_no']?></td>
+					<td><?php echo $f['firstname']." ".$f['lastname'] ?></td>
+					<td><?php echo $f['birthdate'] ?></td>
+					<td><?php echo $f['age'] ?></td>
+					<td><?php echo $f['address'] ?></td>
+					<td><?php echo $f['civil_status'] ?></td>
+					<td><?php echo $f['gender'] ?></td>
+					<td>
+						<center>
+							<a href = "view_maternity.php?itr_no=<?php echo $f['itr_no']?>"class = "btn btn-sm btn-info"><span class = "glyphicon glyphicon-search"></span> VIEW DETAIL</a> 
+						</center>
+					</td>
+				</tr>
+			<?php
+				}
+					$conn->close();
+			?>	
+			</tbody>
+		</table>
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>
+		<div class = "panel panel-default">
+			<div class = "panel-heading">
+				<label>PATIENT'S DATA FORM</label>	<a style = "float:right; margin-top:-4px;" href = "birthing_pending.php?id=<?php echo $_GET['id']?>&lastname=<?php echo $_GET['lastname']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a>
+			</div>
+			<form method = "POST" enctype = "multipart/form-data">
+			<?php
+				$q = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[id]' && `lastname` = '$_GET[lastname]'") or die(mysqli_error());
+				$q1 = $conn->query("SELECT * FROM `complaints` WHERE `com_id` = '$_GET[comp_id]' && `itr_no` = '$_GET[id]' && `section` = 'Prenatal'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+				$f = $q->fetch_array();
+			?>	
+			<div class = "panel-body">
+				<div class = "form-inline">
+					<label>CASE#</label>
+					<input type = "text" size = "40"class = "form-control" name = "case_no"  required = "required"/>
+					<label>NHTS/4P'S</label>
+					<input type = "text" class = "form-control" name = "nhts" />
+					<label>CONTACT#</label>
+					<input type = "text" class = "form-control" name = "contact" />
+				</div>
+				<br />
+				<div class = "form-group">
+					<label>PHILHEALTH ID & MEMBERSHIP:</label>
+					<input type = "text" value = "<?php echo $f['phil_health_no']?>" name = "philhealth" class = "form-control" />
+				</div>
+				<div class = "form-inline">
+					<label>PATIENT'S NAME:</label>
+					<input type = "text" class = "form-control" name = "pat_firstname" value = "<?php echo $f['firstname']?>" placeholder = "Firstname" required = "required" />
+					<input type = "text" class = "form-control" name = "pat_middlename" value = "<?php echo $f['middlename']?>" placeholder = "Middlename"  />
+					<input type = "text" class = "form-control" name = "pat_lastname" value = "<?php echo $f['lastname']?>" placeholder = "Lastname" required = "required" />
+					<label>AGE:</label>
+					<input type = "number" class = "form-control" value = "<?php echo $f['age']?>" name = "age" required = "required" />
+					<label>RELIGION:</label>
+					<input type = "text" class = "form-control" name = "religion" required = "required" />
+				</div>
+				<br />
+				<div class = "form-group">
+					<label>HOME ADDRESS:</label>
+					<input type = "text" class = "form-control" value = "<?php echo $f['address']?>" name = "address" />
+				</div>
+				<div class = "form-inline">
+					<label>OCCUPATION:</label>
+					<input type = "text" class = "form-control" name = "occupation" />
+					<label>DATE OF BIRTH:</label>
+					<input type = "text" name = "date_of_birth" class = "form-control" value = "<?php echo $f['birthdate']?>" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>DATE OF ADMISSION:</label>
+						<select name = "admission_month" style = "width:15%;" class = "form-control" required = "required">
+							<option value = "">Select a month</option>
+							<option value = "01">January</option>
+							<option value = "02">February</option>
+							<option value = "03">March</option>
+							<option value = "04">April</option>
+							<option value = "05">May</option>
+							<option value = "06">June</option>
+							<option value = "07">July</option>
+							<option value = "08">August</option>
+							<option value = "09">September</option>
+							<option value = "10">October</option>
+							<option value = "11">November</option>
+							<option value = "12">December</option>
+						</select>
+						<select name = "admission_day" class = "form-control" style = "width:13%;" required = "required">
+							<option value = "">Select a day</option>
+							<option value = "01">01</option>
+							<option value = "02">02</option>
+							<option value = "03">03</option>
+							<option value = "04">04</option>
+							<option value = "05">05</option>
+							<option value = "06">06</option>
+							<option value = "07">07</option>
+							<option value = "08">08</option>
+							<option value = "09">09</option>	
+							<?php
+								$a = 10;
+								while($a <= 31){
+									echo "<option value = '".$a."'>".$a++."</option>";
+								}
+							?>
+						</select>
+						<select name = "admission_year" class = "form-control" style = "width:13%;" required = "required">
+							<option value = "">Select a year</option>
+							<?php
+								$a = date(Y);
+								while(1965 <= $a){
+									echo "<option value = '".$a."'>".$a--."</option>";
+								}
+							?>
+						</select>
+						<label>TIME OF ADMISSION:</label>
+						<input type = "time" name = "time_of_admission" class = "form-control" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>SPOUSE'S NAME:</label>
+					<input type = "text" class = "form-control" name = "spouse_firstname" placeholder = "Firstname" required = "required" />
+					<input type = "text" class = "form-control" name = "spouse_middlename" placeholder = "Middlename"  />
+					<input type = "text" class = "form-control" name = "spouse_lastname" placeholder = "Lastname" required = "required" />
+					<label>AGE:</label>
+					<input type = "number" class = "form-control" name = "spouse_age" required = "required" />
+					<label>RELIGION:</label>
+					<input type = "text" class = "form-control" name = "spouse_religion" required = "required" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>OCCUPATION</label>
+					<input type = "text" name = "spouse_occupation" class = "form-control" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>NO OF PREGNANCY:</label>
+					<label>G</label><input type = "text" size = "2" name = "g" class = "form-control" />
+					<label>T</label><input type = "text" size = "2" name = "t" class = "form-control" />
+					<label>A</label><input type = "text" size = "2" name = "a" class = "form-control" />
+					<label>L</label><input type = "text" size = "2" name = "l" class = "form-control" />
+					<label>LMP:</label>
+					<input type = "text" size = "10" name = "lmp" class = "form-control" />
+					<label>EDC/EDD:</label>
+					<input type = "text" size = "10" name = "edc" class = "form-control" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>AOG:</label>
+					<input type = "text" name = "aog" class = "form-control"/>
+					<label>FETAL POSITION:</label>
+					<input type = "text" name = "fetal_position" class = "form-control"/>
+					<label>FH:</label>
+					<input type = "text" name = "fh" size = "4" class = "form-control"/>
+					<label>cm FHB:</label>
+					<input type = "text" name = "fhb" size = "4" class = "form-control"/>
+					<label>ppm LOC:</label>
+					<input type = "text" name = "loc" size = "4" class = "form-control"/>
+				</div>
+				<br />
+				<div class = "form-group">
+					<label>ADMITTING DIAGNOSIS:</label>
+					<textarea name = "admitting_diagnosis" style = "resize:none;" class = "form-control"></textarea>
+				</div>
+				<div class = "form-inline">	
+					<label>ADMITTING PHYSICIAN/MIDWIFE:</label>
+					<input type = "text"class = "form-control" name = "midwife" size = "50" required = "required"/>
+				</div>
+				<br />
+				<div class = "form-inline">	
+					<label>DATE OF DELIVERY:</label>
+					<select name = "delivery_month" style = "width:15%;" class = "form-control" required = "required">
+							<option value = "">Select a month</option>
+							<option value = "01">January</option>
+							<option value = "02">February</option>
+							<option value = "03">March</option>
+							<option value = "04">April</option>
+							<option value = "05">May</option>
+							<option value = "06">June</option>
+							<option value = "07">July</option>
+							<option value = "08">August</option>
+							<option value = "09">September</option>
+							<option value = "10">October</option>
+							<option value = "11">November</option>
+							<option value = "12">December</option>
+						</select>
+						<select name = "delivery_day" class = "form-control" style = "width:13%;" required = "required">
+							<option value = "">Select a day</option>
+							<option value = "01">01</option>
+							<option value = "02">02</option>
+							<option value = "03">03</option>
+							<option value = "04">04</option>
+							<option value = "05">05</option>
+							<option value = "06">06</option>
+							<option value = "07">07</option>
+							<option value = "08">08</option>
+							<option value = "09">09</option>	
+							<?php
+								$a = 10;
+								while($a <= 31){
+									echo "<option value = '".$a."'>".$a++."</option>";
+								}
+							?>
+						</select>
+						<select name = "delivery_year" class = "form-control" style = "width:13%;" required = "required">
+							<option value = "">Select a year</option>
+							<?php
+								$a = date(Y);
+								while(1965 <= $a){
+									echo "<option value = '".$a."'>".$a--."</option>";
+								}
+							?>
+						</select>
+					<label>TIME:</label>
+					<input type = "time" class = "form-control" name = "time1" style = "width:10%;" required = "required"/>
+					<label>SEX:</label>
+					<input type = "text" class = "form-control" name = "sex" style = "width:10%;" required = "required"/>
+					<label>WT:</label>
+					<input type = "text" class = "form-control" name = "wt" size = "4" required = "required"/>
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>NAME OF BABY:</label>
+					<input type = "text" class = "form-control" name = "baby_lastname" placeholder = "Lastname" required = "required" />
+					<input type = "text" class = "form-control" name = "baby_firstname" placeholder = "Firstname"  />
+					<input type = "text" class = "form-control" name = "baby_middlename" placeholder = "Middlename" required = "required" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>HEPA:</label>
+					<input type = "text" class = "form-control" name = "hepa" size = "8" required = "required" />
+					<label>BCG:</label>
+					<input type = "text" class = "form-control" name = "bcg" size = "8" required = "required" />
+					<label>NBS:</label>
+					<input type = "text" class = "form-control" name = "nbs" size = "8" required = "required" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<label>DATE OF DISCHARGE:</label>
+					<select name = "date_month" style = "width:15%;" class = "form-control" required = "required">
+							<option value = "">Select a month</option>
+							<option value = "01">January</option>
+							<option value = "02">February</option>
+							<option value = "03">March</option>
+							<option value = "04">April</option>
+							<option value = "05">May</option>
+							<option value = "06">June</option>
+							<option value = "07">July</option>
+							<option value = "08">August</option>
+							<option value = "09">September</option>
+							<option value = "10">October</option>
+							<option value = "11">November</option>
+							<option value = "12">December</option>
+						</select>
+						<select name = "date_day" class = "form-control" style = "width:13%;" required = "required">
+							<option value = "">Select a day</option>
+							<option value = "01">01</option>
+							<option value = "02">02</option>
+							<option value = "03">03</option>
+							<option value = "04">04</option>
+							<option value = "05">05</option>
+							<option value = "06">06</option>
+							<option value = "07">07</option>
+							<option value = "08">08</option>
+							<option value = "09">09</option>	
+							<?php
+								$a = 10;
+								while($a <= 31){
+									echo "<option value = '".$a."'>".$a++."</option>";
+								}
+							?>
+						</select>
+						<select name = "date_year" class = "form-control" style = "width:13%;" required = "required">
+							<option value = "">Select a year</option>
+							<?php
+								$a = date(Y);
+								while(1965 <= $a){
+									echo "<option value = '".$a."'>".$a--."</option>";
+								}
+							?>
+						</select>
+					<label>TIME OF DISCHARGE:</label>
+					<input type = "time" class = "form-control" name = "time_of_discharge" style = "width:10%;" required = "required"/>
+				</div>
+				<br />
+				<div class = "form-group">
+					<label>FINAL DIAGNOSIS:</label>
+					<textarea name = "final_diagnosis" style = "resize:none;" class = "form-control"></textarea>
+				</div>
+				<div class = "form-inline">	
+					<label>DISPOSITION ON DISCHARGE:</label>
+					<input type = "text" class = "form-control" name = "disposition_on_discharge" style = "width:10%;" required = "required"/>
+					<input type = "hidden" value = "<?php echo $_GET['id']?>" name = "itr_no" />
+					<input type = "hidden" value = "<?php echo $_SESSION['user_id']?>" name = "user_id" />
+				</div>
+				<br />
+				<div class = "form-inline">
+					<button class = "btn btn-primary" name = "save_patient"  ><span class = "glyphicon glyphicon-save"></span> SAVE</button>
+				</div>
+			</div>
+			<?php require 'add_query.php'?>
+			</form>
+		</div>
+		 
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script.php" ?>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>MATERNITY</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "view_prenatal_record.php" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<?php
+				$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+			?>
+			<div class = "panel-heading">
+				<h4>Prenatal Record / <?php echo $f1['firstname']." ".$f1['lastname']?></h4>
+			</div>
+			<div class = "panel-body">
+				<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Attending Physician</th>
+					<th>Radiologist</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `prenatal` WHERE `itr_no` = '$_GET[itr_no]' ORDER BY `date` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo date("m/d/Y", strtotime($f['date']))?></td>
+					<td><?php echo $f['attending_physician']?></td>
+					<td><?php echo $f['radiologist']?></td>
+					<td><center><a class = "btn btn-info" href = "prenatal_form.php?itr_no=<?php echo $f['itr_no']?>&prenatal_no=<?php echo $f['prenatal_no']?>"><span class = "glyphicon glyphicon-search"></span> View Detail</a><center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+			</div>
+		</div>
+			
+		<br />
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false,
+					"order": "DESC"
+				});
+			});
+		</script>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" style = "float:left;" height = "55px" /><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>XRAY</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "view_xray_record.php?itr_no=<?php echo $_GET['itr_no']?>" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<?php
+				$q1 = $conn->query("SELECT * FROM `itr` WHERE `itr_no` = '$_GET[itr_no]'") or die(mysqli_error());
+				$f1 = $q1->fetch_array();
+			?>
+			<div class = "panel-heading">
+				<h4>Xray Record / <?php echo $f1['firstname']." ".$f1['lastname']?></h4>
+			</div>
+			<div class = "panel-body">
+		<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>Date Taken</th>
+					<th>Type of Examination</th>
+					<th>Radiologist</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `radiological` NATURAL JOIN `itr` WHERE `rad_id` = '$_GET[rad_id]' && `itr_no` = '$_GET[itr_no]' GROUP BY `itr_no` ORDER BY `rad_id` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo date("m/d/Y", strtotime($f['date_taken']))?></td>
+					<td><?php echo $f['type_of_examination']?></td>
+					<td><?php echo $f['radiologist']?></td>
+					<td><center><a class = "btn btn-info" href = "xray_form.php?itr_no=<?php echo $f['itr_no']?>&rad_id=<?php echo $f['rad_id']?>"><span class = "glyphicon glyphicon-search"></span> View Detail</a><center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+			</div>
+		</div>
+			
+		<br />
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false,
+					"order": "DESC"
+				});
+			});
+		</script>
+</html>
+<!DOCTYPE html>
+<?php
+	require_once'logincheck.php';
+	$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+	$query = $conn->query("SELECT * FROM `user` WHERE `user_id` = '$_SESSION[user_id]'") or die(mysqli_error());
+	$fetch = $query->fetch_array();
+?>
+<html lang = "en">
+	<head>	
+		<title>Health Center Patient Record Management System</title>
+		<meta charset = "UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel = "shortcut icon" href = "images/logo.png" />
+		<link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/jquery.dataTables.css" />
+		<link rel = "stylesheet" type = "text/css" href = "css/customize.css" />
+	</head>
+	<body>
+	<div class = "navbar navbar-default navbar-fixed-top">
+		<img src = "images/logo.png" height = "55px" style = "float:left;"><label class = "navbar-brand">Health Center Patient Record Management System </label>
+		<ul class = "nav navbar-right">	
+				<li class = "dropdown">
+					<a class = "user dropdown-toggle" data-toggle = "dropdown" href = "#">
+						<span class = "glyphicon glyphicon-user"></span>
+						<?php echo $fetch['firstname']." ".$fetch['lastname'] ?>
+						<b class = "caret"></b>
+					</a>
+				<ul class = "dropdown-menu">
+					<li>
+						<a class = "me" href = "logout.php"><span class = "glyphicon glyphicon-log-out"></span> Logout</a>
+					</li>
+				</ul>
+				</li>
+			</ul>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class = "well">
+		<div class = "panel panel-warning">
+			<div class = "panel-heading">
+				<center><label>XRAY</label></center>
+			</div>
+		</div>
+		<a style = "float:right; margin-top:-4px;" href = "xray.php" class = "btn btn-info"><span class = "glyphicon glyphicon-hand-right"></span> BACK</a> 
+		<br />
+		<br />
+		<div class = "panel panel-primary">
+			<div class = "panel-heading">
+				<h4>XRAY RECORD LIST</h4>
+			</div>
+		</div>
+		<br />
+		<table id = "table" cellspacing = "0" class = "display">
+			<thead>
+				<tr>
+					<th>ITR No</th>
+					<th>Name</th>
+					<th>Age</th>
+					<th>Civil Status</th>
+					<th>Address</th>
+					<th><center>Action</center></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php 
+				$conn = new mysqli("localhost", "root", "", "hcpms") or die(mysqli_error());
+				$q = $conn->query("SELECT * FROM `radiological` NATURAL JOIN `itr` GROUP BY `itr_no` ORDER BY `rad_id` DESC") or die(mysqli_error());
+				while($f = $q->fetch_array()){
+			?>
+				<tr>
+					<td><?php echo $f['itr_no']?></td>
+					<td><?php echo $f['firstname']." ".$f['lastname']?></td>
+					<td><?php echo $f['age']?></td>
+					<td><?php echo $f['civil_status']?></td>
+					<td><?php echo $f['address']?></td>
+					<td><center>
+							<a href = "xray_record.php?itr_no=<?php echo $f['itr_no']?>&rad_id=<?php echo $f['rad_id']?>"class = "btn btn-info"><span class = "glyphicon glyphicon-book"></span> All Records</a> 
+						</center></td>
+				</tr>
+			<?php
+				}
+			?>	
+			</tbody>
+		</table>
+	</div>
+	<div id = "footer">
+		<label class = "footer-title">&copy; Copyright Health Center Patient Record Management System 2015</label>
+	</div>
+	</body>
+		<?php require "script3.php" ?>
+		<script type = "text/javascript">
+			$(document).ready(function(){
+				$("#table").DataTable({
+					"paging": false,
+					"info": false
+				});
+			});
+		</script>
+</html>
